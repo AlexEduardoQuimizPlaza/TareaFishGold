@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">TareaFishGold</string>
+
+    <!-- Strings obligatorios para el Navigation Drawer -->
+    <string name="navigation_drawer_open">Abrir menú</string>
+    <string name="navigation_drawer_close">Cerrar menú</string>
+
+    <!-- Opciones para Spinner Nacionalidad -->
+    <string-array name="nacionalidades">
+        <item>Seleccione Nacionalidad</item>
+        <item>Ecuatoriana</item>
+        <item>Colombiana</item>
+        <item>Peruana</item>
+        <item>Extranjero</item>
+    </string-array>
+
+    <!-- Opciones para Spinner Género -->
+    <string-array name="generos">
+        <item>Seleccione Género</item>
+        <item>Masculino</item>
+        <item>Femenino</item>
+        <item>Prefiero no decirlo</item>
+    </string-array>
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- Módulos de los integrantes del grupo -->
+    <item
+        android:id="@+id/menu_trabajador"
+        android:title="Gestión Trabajador (Castro)" />
+
+    <item
+        android:id="@+id/menu_ruta"
+        android:title="Gestión Ruta (Estrada)" />
+
+    <item
+        android:id="@+id/menu_planificacion"
+        android:title="Planificación (Nuñez)" />
+
+    <item
+        android:id="@+id/menu_faena"
+        android:title="Gestión Faena (Villamar)" />
+
+    <item
+        android:id="@+id/menu_embarcacion"
+        android:title="Embarcación (Alejandro)" />
+
+    <!-- Opción para la ventana modal informativa -->
+    <item
+        android:id="@+id/menu_about"
+        android:title="Acerca de"
+        app:showAsAction="never" />
+
+</menu>
