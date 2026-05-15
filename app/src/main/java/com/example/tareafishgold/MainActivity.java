@@ -4,26 +4,28 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import com.google.android.material.navigation.NavigationView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    String correoTmp;
-    TextView mensaje;
+    private String correoTmp;
+    private TextView mensaje;
     private DrawerLayout drawerLayout;
 
     @Override
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        // 1. Configuración de Interfaz y Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -43,43 +46,53 @@ public class MainActivity extends AppCompatActivity {
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
 
-        toggle.getDrawerArrowDrawable().setColor(getResources().getColor(R.color.white));
+        // Ajuste de color del icono de hamburguesa
+        toggle.getDrawerArrowDrawable().setColor(androidx.core.content.ContextCompat.getColor(this, android.R.color.white));
+
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        // --- LÓGICA DINÁMICA DE USUARIO ---
-
-        // 1. Obtener el correo del Intent (el que usaste al iniciar sesión)
+        // 2. Lógica Dinámica de Usuario (Supervisor)
         Intent infoAdicional = getIntent();
         correoTmp = infoAdicional.getStringExtra("correo");
 
-        // 2. Actualizar mensaje de bienvenida en la pantalla principal
         mensaje = findViewById(R.id.main_lblMensaje);
-        mensaje.setText("Bienvenido al sistema FishGold\n" + correoTmp);
-
-        // 3. Actualizar el nombre en el encabezado del Menú Lateral
-        // Debemos obtener la vista del Header (posición 0)
-        View headerView = navigationView.getHeaderView(0);
-        // Buscamos el TextView dentro de ese header
-        TextView txtUsuarioHeader = headerView.findViewById(R.id.nav_header_title_real);
-
-        if (correoTmp != null && txtUsuarioHeader != null) {
-            txtUsuarioHeader.setText(correoTmp); // Seteamos el nombre dinámico
+        if (correoTmp != null) {
+            mensaje.setText("Bienvenido al sistema Puerto Seguro\n" + correoTmp);
         }
 
-        // --- FIN LÓGICA DINÁMICA ---
+        // Actualizar el encabezado del menú lateral con la cédula/usuario
+        View headerView = navigationView.getHeaderView(0);
+        TextView txtUsuarioHeader = headerView.findViewById(R.id.nav_header_title_real);
+        if (correoTmp != null && txtUsuarioHeader != null) {
+            txtUsuarioHeader.setText(correoTmp);
+        }
 
+        // 3. Listener de Navegación Corregido para Gestión CRUD
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.menu_about) {
-                mostrarAcercaDe();
-            } else {
-                Toast.makeText(this, "Módulo " + item.getTitle() + " en desarrollo", Toast.LENGTH_SHORT).show();
+
+            // Lógica para la nueva orden: Consulta, Actualización y Eliminación
+            if (id == R.id.menu_gestion_admin) {
+                Intent intent = new Intent(MainActivity.this, GestionSupervisorActivity.class);
+                startActivity(intent);
             }
+            // Tu módulo específico según la propuesta
+            else if (id == R.id.menu_planificacion) {
+                Toast.makeText(this, "Módulo de Gestión de Pescadores en desarrollo", Toast.LENGTH_SHORT).show();
+            }
+            else if (id == R.id.menu_about) {
+                mostrarAcercaDe();
+            }
+            else {
+                Toast.makeText(this, "Módulo " + item.getTitle() + " asignado a otro compañero", Toast.LENGTH_SHORT).show();
+            }
+
             drawerLayout.closeDrawers();
             return true;
         });
 
+        // Manejo de Insets para diseño Edge-to-Edge
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.drawer_layout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -99,7 +112,11 @@ public class MainActivity extends AppCompatActivity {
     public void borrarPreferencias(View v) {
         SharedPreferences sp = getSharedPreferences("Credenciales", Context.MODE_PRIVATE);
         sp.edit().clear().apply();
-        Toast.makeText(this, "Preferencias borradas.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Sesión cerrada y preferencias borradas.", Toast.LENGTH_SHORT).show();
+
+        // Redirigir al login tras borrar preferencias
+        Intent loginIntent = new Intent(this, LoginActivity.class);
+        startActivity(loginIntent);
         finish();
     }
 }

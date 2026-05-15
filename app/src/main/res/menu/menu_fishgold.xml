@@ -2,28 +2,35 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Módulos de los integrantes del grupo -->
-    <item
-        android:id="@+id/menu_trabajador"
-        android:title="Gestión Trabajador (Castro)" />
+    <group android:id="@+id/group_admin">
+        <item
+            android:id="@+id/menu_gestion_admin"
+            android:title="Gestión de Supervisores (CRUD)"
+            android:icon="@android:drawable/ic_menu_edit" />
+    </group>
 
-    <item
-        android:id="@+id/menu_ruta"
-        android:title="Gestión Ruta (Estrada)" />
+    <group android:id="@+id/group_modulos">
+        <item
+            android:id="@+id/menu_trabajador"
+            android:title="M3: Embarcaciones (Castro)" />
 
-    <item
-        android:id="@+id/menu_planificacion"
-        android:title="Planificación (Nuñez)" />
+        <item
+            android:id="@+id/menu_ruta"
+            android:title="M2: Clasificación de Roles (Alejandro)" />
 
-    <item
-        android:id="@+id/menu_faena"
-        android:title="Gestión Faena (Villamar)" />
+        <item
+            android:id="@+id/menu_planificacion"
+            android:title="M1: Gestión Pescadores (Nuñez)" />
 
-    <item
-        android:id="@+id/menu_embarcacion"
-        android:title="Embarcación (Alejandro)" />
+        <item
+            android:id="@+id/menu_faena"
+            android:title="M5: Control Asistencia (Villamar)" />
 
-    <!-- Opción para la ventana modal informativa -->
+        <item
+            android:id="@+id/menu_embarcacion"
+            android:title="M4: Planificación Faenas (Quimi)" />
+    </group>
+
     <item
         android:id="@+id/menu_about"
         android:title="Acerca de"

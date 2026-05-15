@@ -21,12 +21,6 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -36,12 +30,16 @@ public class Register extends AppCompatActivity {
     private Spinner spNacionalidad, spGenero;
     private RadioGroup rgEstadoCivil;
     private RatingBar ratingIngles;
+    private BaseDatosSQLite dbHelper; // Instancia para manejar SQLite
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
+
+        // Inicializar el ayudante de la base de datos
+        dbHelper = new BaseDatosSQLite(this);
 
         vincularComponentes();
 
@@ -57,7 +55,6 @@ public class Register extends AppCompatActivity {
         configurarSpinners();
 
         if (etFecha != null) {
-            // Evita que salga el teclado al tocar la fecha
             etFecha.setFocusable(false);
             etFecha.setOnClickListener(v -> mostrarCalendario());
         }
@@ -89,15 +86,15 @@ public class Register extends AppCompatActivity {
         String cedula = etCedula != null ? etCedula.getText().toString().trim() : "";
         String nombres = etNombres != null ? etNombres.getText().toString().trim() : "";
         String apellidos = etApellidos != null ? etApellidos.getText().toString().trim() : "";
-        String edad = etEdad != null ? etEdad.getText().toString().trim() : "";
+        String edadStr = etEdad != null ? etEdad.getText().toString().trim() : "";
         String fecha = etFecha != null ? etFecha.getText().toString() : "";
 
-        // Validación básica
         if (cedula.isEmpty() || nombres.isEmpty()) {
             Toast.makeText(this, "Complete los campos obligatorios", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        int edad = edadStr.isEmpty() ? 0 : Integer.parseInt(edadStr);
         String nacionalidad = (spNacionalidad != null && spNacionalidad.getSelectedItem() != null)
                 ? spNacionalidad.getSelectedItem().toString() : "";
         String genero = (spGenero != null && spGenero.getSelectedItem() != null)
@@ -112,65 +109,39 @@ public class Register extends AppCompatActivity {
             }
         }
 
-        String nivelIngles = ratingIngles != null ? String.valueOf(ratingIngles.getRating()) : "0.0";
+        float nivelIngles = ratingIngles != null ? ratingIngles.getRating() : 0.0f;
 
-        String data = "Cédula: " + cedula + "\n" +
-                "Nombres: " + nombres + "\n" +
-                "Apellidos: " + apellidos + "\n" +
-                "Edad: " + edad + "\n" +
-                "Fecha de Nacimiento: " + fecha + "\n" +
-                "Nacionalidad: " + nacionalidad + "\n" +
-                "Género: " + genero + "\n" +
-                "Estado Civil: " + estadoCivil + "\n" +
-                "Nivel de Inglés: " + nivelIngles + "\n" +
-                "-----------------------------------\n";
+        // El supervisor usará su cédula como contraseña inicial para el login
+        String password = cedula;
 
-        guardarSD(data);
-    }
+        // Guardar en la base de datos SQLite
+        boolean insertado = dbHelper.insertarSupervisor(
+                cedula, nombres, apellidos, edad, fecha,
+                nacionalidad, genero, estadoCivil, nivelIngles, password
+        );
 
-    private void guardarSD(String datos) {
-        File f = new File(getExternalFilesDir(null), "RegistrarUsuario.txt");
-        // Uso de try-with-resources para cerrar flujos automáticamente
-        try (FileOutputStream fos = new FileOutputStream(f, true);
-             OutputStreamWriter out = new OutputStreamWriter(fos)) {
-
-            out.write(datos);
-            Log.d("FishGold", "Datos guardados en: " + f.getAbsolutePath());
-            Toast.makeText(this, "Se ha grabado correctamente en FishGold", Toast.LENGTH_SHORT).show();
-
-        } catch (Exception e) {
-            Log.e("SD_Error", "Error al guardar: " + e.getMessage());
-            Toast.makeText(this, "Error al guardar datos", Toast.LENGTH_SHORT).show();
+        if (insertado) {
+            Toast.makeText(this, "Supervisor registrado correctamente", Toast.LENGTH_SHORT).show();
+            vaciarFormulario();
+        } else {
+            Toast.makeText(this, "Error: El supervisor ya existe", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void recuperar(View v) {
-        File f = new File(getExternalFilesDir(null), "RegistrarUsuario.txt");
-        if (!f.exists()) {
-            Toast.makeText(this, "No hay datos para recuperar", Toast.LENGTH_SHORT).show();
+        // Obtenemos los datos directamente desde SQLite
+        String datos = dbHelper.obtenerTodosLosSupervisores();
+
+        if (datos.isEmpty()) {
+            Toast.makeText(this, "No hay supervisores registrados", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        StringBuilder sb = new StringBuilder();
-        try (FileInputStream fis = new FileInputStream(f);
-             InputStreamReader isr = new InputStreamReader(fis);
-             BufferedReader br = new BufferedReader(isr)) {
-
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                sb.append(linea).append("\n");
-            }
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Historial de Registros");
-            builder.setMessage(sb.toString());
-            builder.setPositiveButton("Aceptar", (dialog, which) -> dialog.dismiss());
-            builder.show();
-
-        } catch (Exception e) {
-            Log.e("SD_Error", "Error al recuperar: " + e.getMessage());
-            Toast.makeText(this, "Error al leer el archivo", Toast.LENGTH_SHORT).show();
-        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Supervisores Registrados");
+        builder.setMessage(datos);
+        builder.setPositiveButton("Aceptar", (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 
     private void configurarSpinners() {
@@ -189,7 +160,6 @@ public class Register extends AppCompatActivity {
         Calendar c = Calendar.getInstance();
         DatePickerDialog picker = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             if (etFecha != null) {
-                // Formato profesional: DD/MM/YYYY
                 etFecha.setText(String.format(Locale.getDefault(), "%02d/%02d/%d", dayOfMonth, (month + 1), year));
             }
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
@@ -201,13 +171,10 @@ public class Register extends AppCompatActivity {
         for (TextInputEditText campo : campos) {
             if (campo != null) campo.setText("");
         }
-
         if (spNacionalidad != null) spNacionalidad.setSelection(0);
         if (spGenero != null) spGenero.setSelection(0);
         if (rgEstadoCivil != null) rgEstadoCivil.clearCheck();
         if (ratingIngles != null) ratingIngles.setRating(0f);
-
         if (etCedula != null) etCedula.requestFocus();
-        Toast.makeText(this, "Formulario reiniciado", Toast.LENGTH_SHORT).show();
     }
 }
