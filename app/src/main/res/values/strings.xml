@@ -21,4 +21,25 @@
         <item>Femenino</item>
         <item>Prefiero no decirlo</item>
     </string-array>
+
+    <!-- Módulo Trabajador (RF-1) -->
+    <string-array name="roles_trabajador">
+        <item>Capitán</item>
+        <item>Motorista</item>
+        <item>Pescador</item>
+        <item>Cocinero</item>
+        <item>Ayudante</item>
+    </string-array>
+
+    <string-array name="estados_trabajador">
+        <item>Activo</item>
+        <item>Inactivo</item>
+    </string-array>
+
+    <!-- Módulo Planificación (RF-4) -->
+    <string-array name="estados_viaje">
+        <item>Pendiente</item>
+        <item>En Curso</item>
+        <item>Finalizado</item>
+    </string-array>
 </resources>

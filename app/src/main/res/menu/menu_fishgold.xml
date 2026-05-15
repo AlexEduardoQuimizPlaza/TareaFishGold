@@ -12,7 +12,8 @@
     <group android:id="@+id/group_modulos">
         <item
             android:id="@+id/menu_trabajador"
-            android:title="M3: Embarcaciones (Castro)" />
+            android:title="Gestión de Trabajadores (Castro)"
+            android:icon="@android:drawable/ic_menu_myplaces" />
 
         <item
             android:id="@+id/menu_ruta"
@@ -20,7 +21,8 @@
 
         <item
             android:id="@+id/menu_planificacion"
-            android:title="M1: Gestión Pescadores (Nuñez)" />
+            android:title="Planificación de Faenas (Nuñez)"
+            android:icon="@android:drawable/ic_menu_agenda" />
 
         <item
             android:id="@+id/menu_faena"

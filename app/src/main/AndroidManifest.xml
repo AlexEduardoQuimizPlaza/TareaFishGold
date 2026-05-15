@@ -18,6 +18,14 @@
             android:exported="false" />
 
         <activity
+            android:name=".TrabajadorActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".PlanificacionActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".Register"
             android:exported="false" />
 
