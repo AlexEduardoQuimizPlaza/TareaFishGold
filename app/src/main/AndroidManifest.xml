@@ -26,6 +26,14 @@
             android:exported="false" />
 
         <activity
+            android:name=".PlanificacionFaenaActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".ControlAsistenciaActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".Register"
             android:exported="false" />
 
