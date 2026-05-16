@@ -81,6 +81,15 @@
                 android:text="Ingresar" />
 
             <Button
+                android:id="@+id/btn_entrar_demo"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:onClick="entrarComoDemo"
+                android:text="Entrar sin registro (usuario demo)" />
+
+            <Button
                 android:id="@+id/btn_register"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"

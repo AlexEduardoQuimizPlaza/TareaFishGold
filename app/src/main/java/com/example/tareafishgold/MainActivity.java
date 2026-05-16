@@ -2,9 +2,7 @@ package com.example.tareafishgold;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,8 +51,12 @@ public class MainActivity extends AppCompatActivity {
 
         View headerView = navigationView.getHeaderView(0);
         TextView txtUsuarioHeader = headerView.findViewById(R.id.nav_header_title_real);
+        TextView txtSubtitulo = headerView.findViewById(R.id.nav_header_subtitle);
         if (correoTmp != null && txtUsuarioHeader != null) {
             txtUsuarioHeader.setText(correoTmp);
+        }
+        if (UsuarioInicial.CEDULA.equals(correoTmp) && txtSubtitulo != null) {
+            txtSubtitulo.setText(UsuarioInicial.ROL_DESCRIPCION);
         }
 
         // 3. Navegación
@@ -65,8 +67,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, GestionSupervisorActivity.class));
             } else if (id == R.id.menu_trabajador) {
                 startActivity(new Intent(this, TrabajadorActivity.class));
-            } else if (id == R.id.menu_planificacion) {
+            } else if (id == R.id.menu_reportes) {
+                startActivity(new Intent(this, ReporteViajeActivity.class));
+            }else if (id == R.id.menu_planificacion) {
                 startActivity(new Intent(this, PlanificacionActivity.class));
+            } else if (id == R.id.menu_embarcacion) {
+                startActivity(new Intent(this, PlanificacionFaenaActivity.class));
+            } else if (id == R.id.menu_faena) {
+                startActivity(new Intent(this, ControlAsistenciaActivity.class));
             } else if (id == R.id.menu_about) {
                 mostrarAcercaDe();
             } else {

@@ -16,8 +16,8 @@
             android:icon="@android:drawable/ic_menu_myplaces" />
 
         <item
-            android:id="@+id/menu_ruta"
-            android:title="M2: Clasificación de Roles (Alejandro)" />
+            android:id="@+id/menu_reportes"
+            android:title="Reporte de Viaje (Alejandro)" />
 
         <item
             android:id="@+id/menu_planificacion"

@@ -30,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // Inicializar DB Helper
         dbHelper = new BaseDatosSQLite(this);
+        UsuarioInicial.asegurarCuentaDemo(dbHelper);
 
         View mainView = findViewById(R.id.main);
         if (mainView != null) {
@@ -45,7 +46,25 @@ public class LoginActivity extends AppCompatActivity {
         recordar = findViewById(R.id.login_chkrecordar);
 
         cargarCredencialesSP();
+
+        if (correo != null && correo.getText().toString().trim().isEmpty()) {
+            correo.setText(UsuarioInicial.CEDULA);
+            clave.setText(UsuarioInicial.PASSWORD);
+        }
+
+        findViewById(R.id.btn_entrar_demo).setOnClickListener(v -> entrarComoDemo());
+
         Log.d("Lifecycle", "LoginActivity: OnCreate");
+    }
+
+    public void entrarComoDemo(View v) {
+        entrarComoDemo();
+    }
+
+    private void entrarComoDemo() {
+        if (correo != null) correo.setText(UsuarioInicial.CEDULA);
+        if (clave != null) clave.setText(UsuarioInicial.PASSWORD);
+        validarIngreso(null);
     }
 
     // --- Lógica de Base de Datos ---
