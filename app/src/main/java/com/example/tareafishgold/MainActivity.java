@@ -96,10 +96,30 @@ public class MainActivity extends AppCompatActivity {
                 .create().show();
     }
 
-    public void borrarPreferencias(View v) {
-        getSharedPreferences("Credenciales", Context.MODE_PRIVATE).edit().clear().apply();
+    // Método 1: Solo cierra la sesión actual volviendo al Login (Mantiene los datos si se marcó recordar)
+    public void cerrarSesion(View v) {
         Toast.makeText(this, "Sesión cerrada.", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(this, LoginActivity.class));
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        // Limpiamos el historial para que no puedan volver presionando la flecha del teléfono
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
+    // Método 2: Borra por completo el SharedPreferences "Credenciales" y vuelve al Login vacío
+    public void borrarPreferencias(View v) {
+        getSharedPreferences("Credenciales", Context.MODE_PRIVATE)
+                .edit()
+                .clear()
+                .apply();
+
+        Toast.makeText(this, "Credenciales eliminadas del dispositivo.", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        // Limpiamos el historial de navegación de la app de forma segura
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
         finish();
     }
 }

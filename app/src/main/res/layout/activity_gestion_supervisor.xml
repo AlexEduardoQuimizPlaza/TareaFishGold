@@ -1,78 +1,230 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:orientation="vertical"
+    android:background="#F5F5F5"
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+
+    <!-- Barra superior con icono en blanco -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="Gestión de Supervisores"
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIconTint="@android:color/white" /> <!-- Añadido aquí -->
+
+    <!-- Sección búsqueda + lista -->
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Consulta y Gestión de Supervisores"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp"/>
+        android:layout_margin="12dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="3dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="20dp">
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:background="@android:color/white">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                android:text="Supervisores registrados"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:textColor="#555555"
+                android:layout_marginBottom="6dp" />
+
+            <!-- Búsqueda en tiempo real -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Buscar por cédula o nombre">
+
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etBuscarCedula"
+                    android:id="@+id/etBuscarSupervisor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Cédula a buscar"
-                    android:inputType="number" />
+                    android:imeOptions="actionSearch"
+                    android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <Button
-                android:id="@+id/btnConsultar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_gravity="center"
-                android:text="Buscar" />
+            <!-- Lista de resultados -->
+            <ListView
+                android:id="@+id/lvSupervisores"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:layout_marginTop="6dp"
+                android:divider="#EEEEEE"
+                android:dividerHeight="1dp"
+                android:background="#FAFAFA" />
         </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
-        <EditText android:id="@+id/etEditNombres" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Nombres" />
-        <EditText android:id="@+id/etEditApellidos" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Apellidos" android:layout_marginTop="8dp"/>
-        <EditText android:id="@+id/etEditEdad" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Edad" android:inputType="number" android:layout_marginTop="8dp"/>
-        <EditText android:id="@+id/etEditPass" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Contraseña" android:inputType="textPassword" android:layout_marginTop="8dp"/>
+    <!-- Formulario CRUD -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="3dp">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="24dp"
-            android:gravity="center">
+            android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/btnActualizar"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Actualizar"
-                android:layout_marginEnd="8dp"
-                android:backgroundTint="#4CAF50"/>
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@android:color/white">
 
-            <Button
-                android:id="@+id/btnEliminar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Eliminar"
-                android:backgroundTint="#F44336" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Datos del supervisor"
+                    android:textStyle="bold"
+                    android:textSize="13sp"
+                    android:textColor="#555555"
+                    android:layout_marginBottom="8dp" />
 
-        </LinearLayout>
+                <!-- Cédula -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Cédula / DNI">
 
-    </LinearLayout>
-</ScrollView>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSupCedula"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="10" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Nombres -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Nombres"
+                    android:layout_marginTop="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSupNombres"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Apellidos -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Apellidos"
+                    android:layout_marginTop="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSupApellidos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Edad -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Edad"
+                    android:layout_marginTop="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSupEdad"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:maxLength="3" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Contraseña -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Contraseña"
+                    android:layout_marginTop="8dp"
+                    app:passwordToggleEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etSupPass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Botones -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btnSupNuevo"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Nuevo"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btnSupGuardar"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Guardar"
+                        android:backgroundTint="#2196F3"
+                        android:layout_marginStart="4dp" />
+
+                    <Button
+                        android:id="@+id/btnSupActualizar"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Actualizar"
+                        android:backgroundTint="#4CAF50"
+                        android:visibility="gone"
+                        android:layout_marginStart="4dp" />
+
+                    <Button
+                        android:id="@+id/btnSupEliminar"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Eliminar"
+                        android:backgroundTint="#F44336"
+                        android:visibility="gone"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

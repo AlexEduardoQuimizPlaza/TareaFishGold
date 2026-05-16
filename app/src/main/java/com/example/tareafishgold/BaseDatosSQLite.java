@@ -94,7 +94,7 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
     private static final String PR_OBS              = "observaciones";
 
 
-    // --- M6: Liquidación y Pagos (Nuñez) ---
+    // --- M6: Liquidación y Pagos ---
     private static final String TABLE_LIQUIDACIONES = "liquidaciones";
     private static final String LIQ_ID = "id";
     private static final String LIQ_PLAN_ID = "planificacion_id";
@@ -178,6 +178,7 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
                 ASIS_ESTADO + " TEXT NOT NULL, " +
                 ASIS_HORAS + " REAL DEFAULT 0, " +
                 "UNIQUE(" + ASIS_PLAN_ID + ", " + ASIS_CEDULA + ", " + ASIS_FECHA + "))");
+
         db.execSQL("CREATE TABLE " + TABLE_REPORTES + " (" +
                 REP_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 REP_VIAJE_ID + " INTEGER NOT NULL, " +
@@ -202,8 +203,7 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
                 LIQ_CAPITAN + " TEXT, " +
                 LIQ_OBS + " TEXT, " +
                 LIQ_FECHA + " TEXT NOT NULL)");
-
-        }
+    }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -242,6 +242,20 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("SELECT * FROM " + TABLE_SUPERVISORES + " WHERE " + COL_CEDULA + " = ?",
                 new String[]{cedula});
+    }
+
+    // NUEVO MÉTODO: Permite la búsqueda dinámica en tiempo real por cédula, nombres o apellidos
+    public Cursor buscarSupervisores(String filtro) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String like = "%" + filtro + "%";
+        return db.rawQuery(
+                "SELECT " + COL_CEDULA + ", " + COL_NOMBRES + ", " + COL_APELLIDOS + ", " +
+                        COL_EDAD + ", " + COL_FECHA + ", " + COL_NACIONALIDAD + ", " +
+                        COL_GENERO + ", " + COL_ESTADO_CIVIL + ", " + COL_NIVEL_INGLES + ", " + COL_PASSWORD +
+                        " FROM " + TABLE_SUPERVISORES +
+                        " WHERE " + COL_CEDULA + " LIKE ? OR " + COL_NOMBRES + " LIKE ? OR " + COL_APELLIDOS + " LIKE ?" +
+                        " ORDER BY " + COL_NOMBRES,
+                new String[]{like, like, like});
     }
 
     public boolean actualizarSupervisor(String cedula, String nombres, String apellidos, int edad,
@@ -334,7 +348,6 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
         return db.delete(TABLE_TRABAJADORES, TRAB_CEDULA + " = ?", new String[]{cedula}) > 0;
     }
 
-    // Búsqueda en tiempo real: filtra por cédula, nombre o rol
     public Cursor buscarTrabajadores(String filtro) {
         SQLiteDatabase db = this.getReadableDatabase();
         String like = "%" + filtro + "%";
@@ -347,7 +360,6 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
                 new String[]{like, like, like});
     }
 
-    // Devuelve solo trabajadores activos (para selección de tripulación)
     public Cursor obtenerTrabajadoresActivos() {
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery(
@@ -384,7 +396,6 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
         return db.update(TABLE_VIAJES, values, VIAJE_ID + " = ?", new String[]{id}) > 0;
     }
 
-    // Búsqueda en tiempo real: filtra por código o embarcación
     public Cursor buscarViajes(String filtro) {
         SQLiteDatabase db = this.getReadableDatabase();
         String like = "%" + filtro + "%";
@@ -607,7 +618,7 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
         return db.delete(TABLE_ASISTENCIA, ASIS_ID + " = ?", new String[]{String.valueOf(registroId)}) > 0;
     }
 
-    //  M2: Reporte de Viaje
+    // ===== M2: REPORTE DE VIAJE =====
 
     public List<ViajeReporte> listarTodosLosViajes() {
         List<ViajeReporte> lista = new ArrayList<>();
@@ -646,7 +657,6 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
         cursor.close();
         return lista;
     }
-
 
     public List<ViajeReporte> buscarViajesConEstadisticas(String filtro) {
         List<ViajeReporte> lista = new ArrayList<>();
@@ -687,7 +697,6 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
         cursor.close();
         return lista;
     }
-
 
     public ViajeReporte obtenerViajeCompleto(long viajeId) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -763,6 +772,7 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
         cursor.close();
         return lista;
     }
+
     public long guardarReporteEnBD(ViajeReporte reporte) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -853,7 +863,7 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
                 REP_VIAJE_ID + " = ?", new String[]{String.valueOf(viajeId)}) > 0;
     }
 
-    // ===== M6: LIQUIDACIÓN Y PAGOS (Nuñez) =====
+    // ===== M6: LIQUIDACIÓN Y PAGOS =====
 
     public long insertarLiquidacion(long planificacionId, float pesoKg, float precioKg,
                                     float montoTotal, String capitan, String obs, String fecha) {
