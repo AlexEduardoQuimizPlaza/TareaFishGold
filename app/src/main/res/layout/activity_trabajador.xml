@@ -7,16 +7,16 @@
     android:background="#F5F5F5"
     android:fitsSystemWindows="true">
 
-    <!-- Barra superior -->
     <com.google.android.material.appbar.MaterialToolbar
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
         app:title="Gestión de Trabajadores"
         app:titleTextColor="@android:color/white"
-        app:navigationIcon="@android:drawable/ic_menu_myplaces" />
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIconTint="@android:color/white" />
 
-    <!-- Sección búsqueda + lista -->
+    <!-- Lista -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,12 +40,12 @@
                 android:textColor="#555555"
                 android:layout_marginBottom="6dp" />
 
-            <!-- Búsqueda en tiempo real (RF-3) -->
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Buscar por cédula, nombre o cargo">
+                android:hint="Buscar por cédula, nombre o cargo"
+                app:startIconDrawable="@android:drawable/ic_menu_search">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etBuscarTrabajador"
@@ -55,7 +55,6 @@
                     android:singleLine="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Lista de resultados -->
             <ListView
                 android:id="@+id/lvTrabajadores"
                 android:layout_width="match_parent"
@@ -64,10 +63,19 @@
                 android:divider="#EEEEEE"
                 android:dividerHeight="1dp"
                 android:background="#FAFAFA" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Toca un elemento para editar sus datos"
+                android:textSize="11sp"
+                android:textColor="#AAAAAA"
+                android:gravity="center"
+                android:layout_marginTop="4dp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- Formulario CRUD -->
+    <!-- Formulario -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -95,14 +103,14 @@
                     android:textStyle="bold"
                     android:textSize="13sp"
                     android:textColor="#555555"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="12dp" />
 
-                <!-- Cédula/DNI (RF-1: obligatorio y único) -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Cédula / DNI (máx. 10 dígitos)">
+                    android:hint="Cédula / DNI (máx. 10 dígitos)"
+                    android:layout_marginBottom="8dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etTrabCedula"
@@ -112,13 +120,12 @@
                         android:maxLength="10" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Nombre Completo -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nombre Completo"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginBottom="8dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etTrabNombre"
@@ -128,28 +135,26 @@
                         android:maxLength="150" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Rol / Cargo -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Rol / Cargo"
                     android:textColor="#555555"
-                    android:layout_marginTop="10dp"
+                    android:textSize="12sp"
                     android:layout_marginBottom="2dp" />
 
                 <Spinner
                     android:id="@+id/spTrabRol"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    />
+                    android:layout_marginBottom="8dp" />
 
-                <!-- Teléfono -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Teléfono"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginBottom="8dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etTrabTelefono"
@@ -159,13 +164,12 @@
                         android:maxLength="10" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Dirección -->
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Dirección"
-                    android:layout_marginTop="8dp">
+                    android:layout_marginBottom="8dp">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etTrabDireccion"
@@ -175,22 +179,19 @@
                         android:lines="2" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Estado (RF-2: Activo/Inactivo) -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Estado"
                     android:textColor="#555555"
-                    android:layout_marginTop="10dp"
+                    android:textSize="12sp"
                     android:layout_marginBottom="2dp" />
 
                 <Spinner
                     android:id="@+id/spTrabEstado"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    />
+                    android:layout_height="48dp" />
 
-                <!-- Botones -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -13,17 +13,19 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:title="M6: Reporte de Viajes"
+        app:title="Reporte de Viajes"
         app:titleTextColor="@android:color/white"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:navigationIconTint="@android:color/white" />
 
+    <!-- Pestañas -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@android:color/white"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:elevation="2dp">
 
         <Button
             android:id="@+id/btnTabViajes"
@@ -32,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:layout_weight="1"
-            android:text="Viajes" />
+            android:text="Viajes activos" />
 
         <Button
             android:id="@+id/btnTabReportes"
@@ -41,9 +43,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_weight="1"
-            android:text="Reportes Guardados" />
+            android:text="Reportes guardados" />
     </LinearLayout>
 
+    <!-- Búsqueda y lista -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +66,9 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Buscar viajes">
+                android:hint="Buscar por código, embarcación o destino"
+                android:layout_marginBottom="8dp"
+                app:startIconDrawable="@android:drawable/ic_menu_search">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etBuscarReporte"
@@ -77,8 +82,10 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Buscar reportes"
-                android:visibility="gone">
+                android:hint="Buscar reportes guardados"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone"
+                app:startIconDrawable="@android:drawable/ic_menu_search">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etBuscarReportes"
@@ -92,31 +99,44 @@
                 android:layout_height="wrap_content"
                 android:text="Filtrar por estado"
                 android:textColor="#555555"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="4dp" />
+                android:textSize="12sp"
+                android:layout_marginBottom="2dp" />
 
             <Spinner
                 android:id="@+id/spEstadoFiltro"
                 android:layout_width="match_parent"
-                android:layout_height="48dp" />
+                android:layout_height="48dp"
+                android:layout_marginBottom="6dp" />
 
             <ListView
                 android:id="@+id/lvViajesReporte"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:layout_marginTop="8dp"
-                android:background="#FAFAFA" />
+                android:background="#FAFAFA"
+                android:divider="#EEEEEE"
+                android:dividerHeight="1dp" />
 
             <ListView
                 android:id="@+id/lvReportesGuardados"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:layout_marginTop="8dp"
                 android:background="#FAFAFA"
+                android:divider="#EEEEEE"
+                android:dividerHeight="1dp"
                 android:visibility="gone" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Toca un viaje para ver el detalle"
+                android:textSize="11sp"
+                android:textColor="#AAAAAA"
+                android:gravity="center"
+                android:layout_marginTop="4dp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
+    <!-- Detalle -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -136,9 +156,10 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Detalle"
+                android:text="Detalle del viaje seleccionado"
                 android:textStyle="bold"
-                android:textSize="16sp"
+                android:textSize="13sp"
+                android:textColor="#555555"
                 android:layout_marginBottom="8dp" />
 
             <ScrollView
@@ -152,21 +173,21 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:visibility="gone"
-                    android:lineSpacingMultiplier="1.3" />
+                    android:lineSpacingMultiplier="1.4" />
             </ScrollView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="16dp">
+                android:layout_marginTop="12dp">
 
                 <Button
                     android:id="@+id/btnGuardarReporte"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Guardar"
+                    android:text="Guardar reporte"
                     android:backgroundTint="#4CAF50"
                     android:visibility="gone"
                     android:layout_marginEnd="4dp" />
