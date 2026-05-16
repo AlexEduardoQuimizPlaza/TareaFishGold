@@ -69,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, TrabajadorActivity.class));
             } else if (id == R.id.menu_reportes) {
                 startActivity(new Intent(this, ReporteViajeActivity.class));
-            }else if (id == R.id.menu_planificacion) {
-                startActivity(new Intent(this, PlanificacionActivity.class));
+            } else if (id == R.id.menu_planificacion) {
+                startActivity(new Intent(this, LiquidacionPagoActivity.class));
             } else if (id == R.id.menu_embarcacion) {
                 startActivity(new Intent(this, PlanificacionFaenaActivity.class));
             } else if (id == R.id.menu_faena) {

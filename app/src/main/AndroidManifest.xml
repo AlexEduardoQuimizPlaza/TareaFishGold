@@ -16,13 +16,13 @@
             android:name=".ReporteViajeActivity"
             android:exported="false" />
         <activity
+            android:name=".LiquidacionPagoActivity"
+            android:exported="false" />
+        <activity
             android:name=".GestionSupervisorActivity"
             android:exported="false" />
         <activity
             android:name=".TrabajadorActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PlanificacionActivity"
             android:exported="false" />
         <activity
             android:name=".PlanificacionFaenaActivity"

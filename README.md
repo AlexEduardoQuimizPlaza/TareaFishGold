@@ -1,49 +1,103 @@
 # TareaFishGold — Puerto Seguro
 
-Aplicación Android (Java) para gestión portuaria pesquera: supervisores, trabajadores, planificación de viajes/faenas y control de asistencia.
+Aplicación Android (Java) para gestión portuaria pesquera: autenticación de supervisores, gestión de trabajadores, planificación de viajes y faenas, control de asistencia y liquidación de pagos por captura.
+
+---
 
 ## Módulos del equipo
 
-| Módulo | Responsable | Estado en app |
-|--------|-------------|---------------|
-| M1 — Autenticación / supervisores | Base | Login, registro, CRUD supervisores |
-| M2 — Clasificación de roles | Alejandro | Placeholder (menú) |
-| Trabajadores | Castro | `TrabajadorActivity` |
-| Planificación viajes | Nuñez | `PlanificacionActivity` |
-| **M4 — Planificación Faenas** | **Quimi** | `PlanificacionFaenaActivity` |
-| **M5 — Control Asistencia** | **Villamar** | `ControlAsistenciaActivity` |
+| # | Módulo | Responsable | Activity | Descripción |
+|---|--------|-------------|----------|-------------|
+| M1 | Autenticación y Supervisores | Base | `LoginActivity`, `Register`, `GestionSupervisorActivity` | Login, registro y CRUD de supervisores |
+| M2 | Gestión de Trabajadores | Castro | `TrabajadorActivity` | CRUD de tripulantes: cédula, nombre, rol, teléfono, dirección, estado |
+| M3 | Reporte de Viaje | Alejandro | `ReporteViajeActivity` | Consulta, filtro por estado y guardado de reportes de viajes |
+| M4 | Planificación de Faenas | Quimiz | `PlanificacionFaenaActivity` | Crea planificaciones de faena asociadas a viajes; gestiona turno, fechas y estado |
+| M5 | Control de Asistencia | Villamar | `ControlAsistenciaActivity` | Registra asistencia (Presente/Ausente/Tarde/Justificado) y horas por planificación |
+| M6 | Liquidación y Pagos | Nuñez | `LiquidacionPagoActivity` | Ingresa peso capturado y precio/kg; calcula monto a pagar; historial de liquidaciones |
+
+---
+
+## Descripción de cada módulo
+
+### M1 — Autenticación y Supervisores
+- Pantalla de login con cédula y contraseña.
+- Registro de nuevos supervisores.
+- Usuario demo precargado (sin necesidad de registro).
+- CRUD de supervisores: buscar por cédula, actualizar datos, eliminar.
+
+### M2 — Gestión de Trabajadores (Castro)
+- Alta, edición y baja de trabajadores de la embarcación.
+- Campos: cédula, nombre completo, rol (Capitán/Motorista/Pescador/Cocinero/Ayudante), teléfono, dirección, estado (Activo/Inactivo).
+- Búsqueda en tiempo real por cédula, nombre o rol.
+- Solo trabajadores **Activos** aparecen disponibles para asignar a viajes.
+
+### M3 — Reporte de Viaje (Alejandro)
+- Lista todos los viajes con estadísticas: total trabajadores, faenas y registros de asistencia.
+- Filtro por estado (Pendiente / En Curso / Finalizado) y búsqueda en tiempo real.
+- Permite guardar y eliminar reportes para consulta offline.
+- Vista de detalle con datos completos del viaje seleccionado.
+
+### M4 — Planificación de Faenas (Quimiz)
+- Crea planificaciones de faena vinculadas a un viaje activo.
+- Campos: nombre de faena, viaje asociado, fecha inicio/fin, turno (Mañana/Tarde/Noche), estado (Programada/En ejecución/Completada/Cancelada), observaciones.
+- Búsqueda en tiempo real por nombre de faena o código de viaje.
+- Las planificaciones creadas aquí son consumidas por M5 y M6.
+
+### M5 — Control de Asistencia (Villamar)
+- Selecciona una planificación de faena (M4) y registra asistencia de cada trabajador.
+- Estados disponibles: Presente, Ausente, Tarde, Justificado.
+- Registra fecha y horas trabajadas por jornada.
+- Lista los registros del día/faena seleccionada con opción de eliminar.
+
+### M6 — Liquidación y Pagos (Nuñez)
+- Selecciona una planificación creada en M4 desde un combobox.
+- Ingresa el **precio por kg** y el **peso real capturado (kg)**.
+- Calcula automáticamente el **monto a pagar** en tiempo real (peso × precio/kg).
+- Registra capitán responsable y observaciones.
+- Historial de liquidaciones con opción de eliminar registros.
+
+---
 
 ## Dependencias entre módulos
 
 ```
-M1 (login) ──┬──> M4 (planificaciones de faena sobre viajes)
-M3/Nuñez ────┘         │
- (viajes + tripulación)  └──> M5 (asistencia por planificación + tripulación)
+M1 (login/supervisores)
+    │
+    ├──> M2 (trabajadores) ──────────────────────┐
+    │                                             │
+    ├──> M3 (reportes de viaje)                  │ tripulación
+    │         ↑                                  │
+    │    viajes (BD)                             ↓
+    │         │                     M4 (planificaciones de faena)
+    │         └──────────────────────────┬───────┘
+    │                                    │
+    │                                    ├──> M5 (asistencia)
+    │                                    │
+    │                                    └──> M6 (liquidación/pagos)
 ```
 
-- **M4** consume viajes activos y tripulación definida en **Planificación de Faenas (Nuñez)**.
-- **M5** consume planificaciones de **M4** y la tripulación del viaje asociado.
+- **M4** depende de los viajes registrados en la BD y la tripulación asignada en M2.
+- **M5** depende de las planificaciones de **M4** y la tripulación del viaje.
+- **M6** depende de las planificaciones de **M4** para el combobox de selección.
 
-### Contratos de integración (interfaces)
+---
 
-| Interfaz | Uso |
-|----------|-----|
-| `IFaenaPlanificacionRepository` | CRUD de planificaciones; listar viajes; tripulación por planificación |
-| `IAsistenciaRepository` | Registrar y listar asistencia por planificación |
+## Base de datos (SQLite v7)
 
-Implementaciones: `FaenaPlanificacionRepositoryImpl`, `AsistenciaRepositoryImpl` (paquete `data`).
+| Tabla | Módulo | Descripción |
+|-------|--------|-------------|
+| `supervisores` | M1 | Cuentas de acceso al sistema |
+| `trabajadores` | M2 | Tripulantes registrados |
+| `viajes` | M3/Base | Viajes con embarcación, destino, meta y estado |
+| `faena_asistencia` | Base | Tripulación asignada por viaje |
+| `planificaciones_faena` | M4 | Planificaciones de faena por viaje |
+| `control_asistencia` | M5 | Registros de asistencia por planificación |
+| `liquidaciones` | M6 | Pagos por captura: peso, precio/kg, monto total |
+| `reportes_guardados` | M3 | Snapshots de reportes de viaje guardados |
 
-Ejemplo para M5:
+> Al actualizar la versión de BD, `onUpgrade` recrea todas las tablas. En desarrollo, desinstale la app si ve datos inconsistentes.
 
-```java
-BaseDatosSQLite db = new BaseDatosSQLite(context);
-IFaenaPlanificacionRepository m4 = new FaenaPlanificacionRepositoryImpl(db);
-IAsistenciaRepository m5 = new AsistenciaRepositoryImpl(db);
-
-List<PlanificacionFaena> planes = m4.buscarPlanificaciones("");
-long planId = planes.get(0).getId();
-m5.registrarAsistencia(planId, "1234567890", "2026-05-15", "Presente", 8f);
-```
+---
 
 ## Usuario demo (sin registro)
 
@@ -55,93 +109,76 @@ Al abrir la app se crea automáticamente un supervisor de prueba:
 | Contraseña | `0956856306` |
 
 Opciones de entrada:
-
 1. Pulsar **「Entrar sin registro (usuario demo)」** en la pantalla de login.
 2. Usar **Ingresar** con los datos ya precargados.
 
-## Cómo ejecutar paso a paso
+---
+
+## Cómo ejecutar
 
 ### Requisitos
 
-- Android Studio (Ladybug o superior recomendado)
+- Android Studio (Ladybug o superior)
 - JDK 11+
 - Dispositivo/emulador con **API 26+** (Android 8.0)
 
-### 1. Clonar y abrir el proyecto
+### Pasos
 
 ```bash
 git clone <url-del-repositorio>
 cd TareaFishGold
 ```
 
-En Android Studio: **File → Open** → seleccionar la carpeta `TareaFishGold`.
+En Android Studio: **File → Open** → seleccionar la carpeta `TareaFishGold` → esperar sync de Gradle → **Run** (▶).
 
-### 2. Sincronizar Gradle
+### Flujo de prueba recomendado
 
-- Espere a que termine **Sync Project with Gradle Files**.
-- Si falla, use **File → Invalidate Caches / Restart**.
+1. **Login** → botón *Entrar sin registro* → pantalla principal con drawer.
+2. **M2 — Trabajadores (Castro):** registre al menos un trabajador activo.
+3. **M4 — Planificación Faenas (Quimiz):** cree un viaje (desde la BD) y luego una planificación ligada a él.
+4. **M5 — Control Asistencia (Villamar):** seleccione la planificación → registre Presente/Ausente.
+5. **M6 — Liquidación y Pagos (Nuñez):** seleccione la planificación → ingrese peso y precio/kg → pulse *Finalizar y pagar*.
+6. **M3 — Reporte de Viaje (Alejandro):** consulte el resumen del viaje y guarde el reporte.
 
-### 3. Ejecutar en emulador o dispositivo
+---
 
-1. Conecte un teléfono con depuración USB **o** cree un AVD (API 26+).
-2. Seleccione el módulo **app** y el dispositivo.
-3. Pulse **Run** (▶) o `Shift+F10`.
-
-### 4. Flujo de prueba recomendado
-
-1. **Login:** botón *Entrar sin registro* → pantalla principal con drawer.
-2. **Trabajadores:** registre al menos un trabajador activo.
-3. **Planificación de Faenas (Nuñez):** cree un viaje y asigne tripulación.
-4. **M4 — Planificación Faenas (Quimi):** menú lateral → cree una planificación ligada al viaje.
-5. **M5 — Control Asistencia (Villamar):** seleccione la planificación → registre Presente/Ausente/Tarde.
-
-### 5. Pruebas unitarias
-
-En Android Studio: clic derecho en `app/src/test/java/.../ModulosIntegracionTest` → **Run**.
-
-O desde terminal (en la raíz del proyecto):
-
-```bash
-./gradlew test
-```
-
-En Windows:
-
-```powershell
-.\gradlew.bat test
-```
-
-Incluye 4 casos de integración M4+M5 con mocks en memoria.
-
-## Estructura relevante
+## Estructura del proyecto
 
 ```
 app/src/main/java/com/example/tareafishgold/
+├── LoginActivity.java
+├── Register.java
+├── MainActivity.java
+├── GestionSupervisorActivity.java      # M1
+├── TrabajadorActivity.java             # M2
+├── ReporteViajeActivity.java           # M3
+├── PlanificacionFaenaActivity.java     # M4
+├── ControlAsistenciaActivity.java      # M5
+├── LiquidacionPagoActivity.java        # M6
+├── BaseDatosSQLite.java                # SQLite v7 — todas las tablas
 ├── UsuarioInicial.java
-├── PlanificacionFaenaActivity.java    # M4
-├── ControlAsistenciaActivity.java     # M5
-├── contract/                          # Interfaces públicas
-├── data/                              # Implementaciones
-├── model/                             # DTOs
-└── BaseDatosSQLite.java               # SQLite v4
+├── contract/
+│   ├── IFaenaPlanificacionRepository.java
+│   └── IAsistenciaRepository.java
+├── data/
+│   ├── FaenaPlanificacionRepositoryImpl.java
+│   └── AsistenciaRepositoryImpl.java
+└── model/
+    ├── PlanificacionFaena.java
+    ├── RegistroAsistencia.java
+    ├── Liquidacion.java
+    ├── ViajeResumen.java
+    └── ViajeReporte.java
 ```
 
-### Tablas nuevas (v4)
-
-- `planificaciones_faena` — planificaciones M4
-- `control_asistencia` — registros M5
-
-> **Nota:** al actualizar la versión de BD, `onUpgrade` recrea las tablas. En desarrollo, desinstale la app si ve datos inconsistentes.
-
-## Checklist de entrega M4 / M5
-
-- [x] Compilación sin errores
-- [x] Navegación desde el drawer a M4 y M5
-- [x] Interfaces `IFaenaPlanificacionRepository` / `IAsistenciaRepository`
-- [x] M5 depende de planificaciones M4 y tripulación de viajes
-- [x] Usuario demo sin registro
-- [x] Pruebas unitarias de integración (4 casos)
+---
 
 ## Integrantes
 
-ALEJANDRO JONATHAN · CASTRO RICARDO · NUÑEZ MIGUEL · QUIMIZ ALEX · VILLAMAR ELIZABETH
+| Nombre | Módulo |
+|--------|--------|
+| Alejandro Jonathan | M3 — Reporte de Viaje |
+| Castro Ricardo | M2 — Gestión de Trabajadores |
+| Nuñez Miguel | M6 — Liquidación y Pagos |
+| Quimiz Alex | M4 — Planificación de Faenas |
+| Villamar Elizabeth | M5 — Control de Asistencia |

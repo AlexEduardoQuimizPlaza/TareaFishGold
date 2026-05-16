@@ -17,20 +17,23 @@
 
         <item
             android:id="@+id/menu_reportes"
-            android:title="Reporte de Viaje (Alejandro)" />
+            android:title="Reporte de Viaje (Alejandro)"
+            android:icon="@android:drawable/ic_menu_compass" />
 
         <item
             android:id="@+id/menu_planificacion"
-            android:title="Planificación de Faenas (Nuñez)"
+            android:title="Liquidación y Pagos (Nuñez)"
             android:icon="@android:drawable/ic_menu_agenda" />
 
         <item
             android:id="@+id/menu_faena"
-            android:title="M5: Control Asistencia (Villamar)" />
+            android:icon="@android:drawable/ic_menu_today"
+            android:title="Control Asistencia (Villamar)" />
 
         <item
             android:id="@+id/menu_embarcacion"
-            android:title="M4: Planificación Faenas (Quimi)" />
+            android:icon="@android:drawable/ic_menu_mapmode"
+            android:title="Planificación Faenas (Quimiz)" />
     </group>
 
     <item

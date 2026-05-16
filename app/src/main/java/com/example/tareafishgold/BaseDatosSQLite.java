@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import com.example.tareafishgold.model.Liquidacion;
 import com.example.tareafishgold.model.PlanificacionFaena;
 import com.example.tareafishgold.model.RegistroAsistencia;
 import com.example.tareafishgold.model.ViajeReporte;
@@ -22,7 +23,7 @@ import java.util.Locale;
 public class BaseDatosSQLite extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "PuertoSeguro.db";
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     private static final String TABLE_SUPERVISORES = "supervisores";
     private static final String COL_CEDULA = "cedula";
@@ -92,6 +93,17 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
     private static final String PR_ESTADO           = "estado";
     private static final String PR_OBS              = "observaciones";
 
+
+    // --- M6: Liquidación y Pagos (Nuñez) ---
+    private static final String TABLE_LIQUIDACIONES = "liquidaciones";
+    private static final String LIQ_ID = "id";
+    private static final String LIQ_PLAN_ID = "planificacion_id";
+    private static final String LIQ_PESO = "peso_capturado_kg";
+    private static final String LIQ_PRECIO_KG = "precio_por_kg";
+    private static final String LIQ_MONTO = "monto_total";
+    private static final String LIQ_CAPITAN = "capitan_responsable";
+    private static final String LIQ_OBS = "observaciones";
+    private static final String LIQ_FECHA = "fecha_registro";
 
     private static final String TABLE_REPORTES = "reportes_guardados";
     private static final String REP_ID = "id";
@@ -181,10 +193,21 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
                 REP_FECHA_GEN + " TEXT, " +
                 "UNIQUE(" + REP_VIAJE_ID + "))");
 
+        db.execSQL("CREATE TABLE " + TABLE_LIQUIDACIONES + " (" +
+                LIQ_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                LIQ_PLAN_ID + " INTEGER NOT NULL, " +
+                LIQ_PESO + " REAL NOT NULL, " +
+                LIQ_PRECIO_KG + " REAL NOT NULL, " +
+                LIQ_MONTO + " REAL NOT NULL, " +
+                LIQ_CAPITAN + " TEXT, " +
+                LIQ_OBS + " TEXT, " +
+                LIQ_FECHA + " TEXT NOT NULL)");
+
         }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_LIQUIDACIONES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ASISTENCIA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PLAN_FAENA);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_FAENA);
@@ -828,5 +851,56 @@ public class BaseDatosSQLite extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_REPORTES,
                 REP_VIAJE_ID + " = ?", new String[]{String.valueOf(viajeId)}) > 0;
+    }
+
+    // ===== M6: LIQUIDACIÓN Y PAGOS (Nuñez) =====
+
+    public long insertarLiquidacion(long planificacionId, float pesoKg, float precioKg,
+                                    float montoTotal, String capitan, String obs, String fecha) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(LIQ_PLAN_ID, planificacionId);
+        values.put(LIQ_PESO, pesoKg);
+        values.put(LIQ_PRECIO_KG, precioKg);
+        values.put(LIQ_MONTO, montoTotal);
+        values.put(LIQ_CAPITAN, capitan);
+        values.put(LIQ_OBS, obs);
+        values.put(LIQ_FECHA, fecha);
+        return db.insert(TABLE_LIQUIDACIONES, null, values);
+    }
+
+    public boolean eliminarLiquidacion(long id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_LIQUIDACIONES,
+                LIQ_ID + " = ?", new String[]{String.valueOf(id)}) > 0;
+    }
+
+    public List<Liquidacion> listarLiquidaciones() {
+        List<Liquidacion> lista = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(
+                "SELECT l." + LIQ_ID + ", l." + LIQ_PLAN_ID +
+                        ", p." + PF_NOMBRE +
+                        ", l." + LIQ_PESO + ", l." + LIQ_PRECIO_KG + ", l." + LIQ_MONTO +
+                        ", l." + LIQ_CAPITAN + ", l." + LIQ_OBS + ", l." + LIQ_FECHA +
+                        " FROM " + TABLE_LIQUIDACIONES + " l" +
+                        " LEFT JOIN " + TABLE_PLAN_FAENA + " p ON l." + LIQ_PLAN_ID + " = p." + PF_ID +
+                        " ORDER BY l." + LIQ_ID + " DESC", null);
+        if (cursor.moveToFirst()) {
+            do {
+                lista.add(new Liquidacion(
+                        cursor.getLong(0),
+                        cursor.getLong(1),
+                        cursor.getString(2) != null ? cursor.getString(2) : "—",
+                        cursor.getFloat(3),
+                        cursor.getFloat(4),
+                        cursor.getFloat(5),
+                        cursor.getString(6),
+                        cursor.getString(7),
+                        cursor.getString(8)));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return lista;
     }
 }
