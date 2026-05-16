@@ -8,31 +8,28 @@
     android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <!-- Logo circular del sistema FishGold -->
     <ImageView
         android:id="@+id/nav_header_logo"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:src="@mipmap/ic_launcher_round" />
 
-    <!-- ID añadido para nombre dinámico -->
     <TextView
         android:id="@+id/nav_header_title_real"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
+        android:paddingTop="10dp"
         android:text="Usuario"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="@android:color/white" />
 
-    <!-- Tu rol en el proyecto -->
     <TextView
         android:id="@+id/nav_header_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Software Engineering Student"
-        android:textColor="@android:color/white"
-        android:textSize="14sp" />
+        android:text="Puerto Seguro — Gestión Pesquera"
+        android:textColor="#CCFFFFFF"
+        android:textSize="12sp" />
 
 </LinearLayout>

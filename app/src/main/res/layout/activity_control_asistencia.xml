@@ -12,11 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:title="M5: Control Asistencia"
+        app:title="Control de Asistencia"
         app:titleTextColor="@android:color/white"
         app:navigationIcon="?attr/homeAsUpIndicator"
         app:navigationIconTint="@android:color/white" />
 
+    <!-- Selección de faena -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,15 +35,16 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Planificación de faena (dependencia M4)"
+                android:text="1. Selecciona la faena"
                 android:textStyle="bold"
-                android:textColor="#555555" />
+                android:textSize="13sp"
+                android:textColor="#555555"
+                android:layout_marginBottom="6dp" />
 
             <Spinner
                 android:id="@+id/spPlanificacionAsistencia"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginTop="4dp" />
+                android:layout_height="48dp" />
 
             <TextView
                 android:id="@+id/txtInfoPlanificacion"
@@ -54,6 +56,7 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
+    <!-- Formulario de registro -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,22 +74,34 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Registrar asistencia"
+                android:text="2. Registrar asistencia"
                 android:textStyle="bold"
-                android:textColor="#555555" />
+                android:textSize="13sp"
+                android:textColor="#555555"
+                android:layout_marginBottom="6dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trabajador"
+                android:textColor="#555555"
+                android:textSize="12sp"
+                android:layout_marginBottom="2dp" />
 
             <Spinner
                 android:id="@+id/spTrabajadorAsistencia"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginTop="4dp" />
+                android:layout_marginBottom="8dp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="Fecha de registro">
+                android:hint="Fecha de registro"
+                android:layout_marginBottom="8dp"
+                app:endIconMode="custom"
+                app:endIconDrawable="@android:drawable/ic_menu_my_calendar">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etFechaAsistencia"
@@ -96,32 +111,47 @@
                     android:clickable="true" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Estado"
-                android:layout_marginTop="8dp"
-                android:textColor="#555555" />
-
-            <Spinner
-                android:id="@+id/spEstadoAsistencia"
-                android:layout_width="match_parent"
-                android:layout_height="48dp" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="Horas trabajadas">
+                android:orientation="horizontal">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etHorasAsistencia"
-                    android:layout_width="match_parent"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:text="8" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:orientation="vertical"
+                    android:layout_marginEnd="8dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Estado"
+                        android:textColor="#555555"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="2dp" />
+
+                    <Spinner
+                        android:id="@+id/spEstadoAsistencia"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp" />
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:hint="Horas">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etHorasAsistencia"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        android:text="8" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btnRegistrarAsistencia"
@@ -133,6 +163,7 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
+    <!-- Lista de registros -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -151,15 +182,24 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Registros del día / faena"
+                android:text="Registros de la faena seleccionada"
                 android:textStyle="bold"
-                android:textColor="#555555" />
+                android:textSize="13sp"
+                android:textColor="#555555"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Pulsación larga sobre un registro para eliminarlo"
+                android:textSize="11sp"
+                android:textColor="#AAAAAA"
+                android:layout_marginBottom="6dp" />
 
             <ListView
                 android:id="@+id/lvAsistencias"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp" />
+                android:layout_height="match_parent" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
