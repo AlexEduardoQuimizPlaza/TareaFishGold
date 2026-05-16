@@ -13,6 +13,9 @@
         android:theme="@style/Theme.TareaFishGold"
         tools:targetApi="31">
         <activity
+            android:name=".ViajeActivity"
+            android:exported="false" />
+        <activity
             android:name=".ReporteViajeActivity"
             android:exported="false" />
         <activity
@@ -27,13 +30,6 @@
         <activity
             android:name=".PlanificacionFaenaActivity"
             android:exported="false" />
-        <activity
-            android:name=".ControlAsistenciaActivity"
-            android:exported="false" />
-        <activity
-            android:name=".PlanificacionFaenaActivity"
-            android:exported="false" />
-
         <activity
             android:name=".ControlAsistenciaActivity"
             android:exported="false" />
